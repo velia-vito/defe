@@ -103,7 +103,8 @@ def _hub_links(soup_or_html, scope=None, label=""):
     nodes = scope.find_all("a", href=True) if scope is not None else root.find_all("a", href=True)
     for a in nodes:
         href = a["href"]
-        if "hubcloud" in href or "hubdrive" in href:
+        is_host = "hubcloud" in href or "hubdrive" in href or "greenmotors" in href
+        if is_host or (scope is not None and href.startswith("http") and BASE not in href):
             text = a.get_text(" ", strip=True)
             if label and re.search(r"\.(mkv|mp4|avi|iso|zip|rar)", label, re.I):
                 name = label.strip()

@@ -1,3 +1,4 @@
+import html as _html
 import re
 from collections import OrderedDict
 from urllib.parse import quote, unquote, urljoin
@@ -276,6 +277,19 @@ def _season_folder(title, season, year=None):
     return None
 
 
+def _find_movie_folder(title):
+    try:
+        r = requests.get(_abs("/movies/"), headers=UA, timeout=15)
+        r.raise_for_status()
+    except Exception:
+        return None
+    for m in re.finditer(r'data-name="([^"]+)"[^>]*data-url="([^"]+)"', r.text):
+        name = _html.unescape(m.group(1)).strip()
+        if _title_hit(name, title):
+            return _abs(_html.unescape(m.group(2)))
+    return None
+
+
 def dlmovie(title, year=None, tmdb_id=None, imdb_id=None):
     try:
         candidates = []
@@ -285,6 +299,12 @@ def dlmovie(title, year=None, tmdb_id=None, imdb_id=None):
             candidates.append(f"/movies/{quote(t)}/")
         for path in candidates:
             folder = _try_folder(path)
+            if folder:
+                files = _file_urls(folder)
+                if files:
+                    return files
+        if year is None:
+            folder = _find_movie_folder(title)
             if folder:
                 files = _file_urls(folder)
                 if files:

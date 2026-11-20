@@ -1,6 +1,6 @@
 # Download Everything From Everywhere
 
-`web/` is the frontend, `api/` is the FastAPI backend, and `scrapers/` contains the source integrations.
+`web/` is the frontend, `py-front/` is a standalone Python-only frontend (no TMDB or Node.js), `api/` is the FastAPI backend, and `scrapers/` contains the source integrations.
 
 ## Run locally
 
@@ -25,6 +25,26 @@ npm start -- --hostname 127.0.0.1
 ```
 
 Open [http://localhost:3000](http://localhost:3000). The TMDB token is used by the browser, so it is visible to visitors.
+
+### Python-only frontend (no TMDB or Node.js)
+
+If you only have Python 3.12+ and don't want to set up Node.js or a TMDB token, run `py-front/` instead. It serves both the search UI and scraper API in a single process.
+
+```sh
+python3 -m venv .venv
+.venv/bin/pip install -r api/requirements.txt
+.venv/bin/python py-front/app.py
+```
+
+On Windows (PowerShell / cmd):
+
+```powershell
+python -m venv .venv
+.venv\Scripts\pip install -r api\requirements.txt
+.venv\Scripts\python py-front\app.py
+```
+
+Open [http://127.0.0.1:8080](http://127.0.0.1:8080). See `py-front/README.md` for details.
 
 ## Host on a server
 
